@@ -3,6 +3,7 @@ package brickBreaker;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -10,21 +11,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
 
 public class Gameplay extends JPanel implements KeyListener, ActionListener {
     private boolean play = false;
-    private int score = 0;
+    private int score = 2;
 
     private int totalBricks = 21;
 
     private Timer timer;
-    private int delay = 2;
+    private int delay = 1;
 
     private int playerX = 310;
 
-    private int ballPosX = 120;
-    private int ballPosY = 350;
-    private int ballXdir = -1;
+    Random rand = new Random();
+    private int ballPosX = rand.nextInt(450) + 120;
+    private int ballPosY = rand.nextInt(300) + 250;
+//    private int ballPosX = 120;
+//    private int ballPosY = 350;
+    private int ballXdir = rand.nextBoolean() ? 1 : -1;
     private int ballYdir = -2;
 
     private MapGenerator map;
@@ -44,17 +49,44 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
         //draw blocks
         map.draw((Graphics2D)g);
         //borders
-        g.setColor(Color.yellow);
+        g.setColor(Color.white);
         g.fillRect(0,0, 3, 592);
         g.fillRect(0,0, 692, 3);
         g.fillRect(686,0, 3, 592);
+        //scores
+        g.setColor(Color.white);
+        g.setFont(new Font("serif", Font.BOLD, 25));
+        g.drawString("" + score, 590, 30);
+
         //paddle
-        g.setColor(Color.green);
+        g.setColor(Color.white);
         g.fillRect(playerX, 550, 100, 8);
         //ball
-        g.setColor(Color.yellow);
+        g.setColor(Color.green);
         g.fillOval(ballPosX, ballPosY, 20, 20);
 
+        if(totalBricks <= 0) {
+            play = false;
+            ballXdir = 0;
+            ballYdir = 0;
+            g.setColor(Color.green);
+            g.setFont(new Font("serif", Font.BOLD, 30));
+            g.drawString("You Won!", 260, 300);
+            g.setFont(new Font("serif", Font.BOLD, 20));
+            g.drawString("Press Enter to Restart", 230, 350);
+        }
+
+        if(ballPosY > 570) {
+            play = false;
+            ballXdir = 0;
+            ballYdir = 0;
+            g.setColor(Color.green);
+            g.setFont(new Font("serif", Font.BOLD, 30));
+            g.drawString("Game Over! Your score: " + score, 175, 300);
+            g.setFont(new Font("serif", Font.BOLD, 20));
+            g.drawString("Press Enter to Restart", 255, 350);
+        }
+        g.dispose();
     }
 
     @Override
@@ -105,7 +137,8 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
                             map.setBrickValue(0, i, j);
                             totalBricks--;
                             score += 5;
-                            if(ballPosX + 19 <= brickRect.x || ballPosX + 1 >= brickRect.x + brickRect.width) {
+                            if(ballPosX + 19 <= brickRect.x || ballPosX +
+                                1 >= brickRect.x + brickRect.width) {
                                 ballXdir = -ballXdir;
                             } else {
                                 ballYdir = -ballYdir;
@@ -149,6 +182,21 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
                 playerX = 10;
             } else {
                 moveLeft();
+            }
+        }
+        if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+            if(!play) {
+                play = true;
+                ballPosX = rand.nextInt(450) + 120;
+                ballPosY = rand.nextInt(300) + 250;
+                ballXdir = rand.nextBoolean() ? 1 : -1;
+                ballYdir = -2;
+                playerX = 310;
+                totalBricks = 21;
+                score = 0;
+                map = new MapGenerator(3, 7);
+
+                repaint();
             }
         }
     }
