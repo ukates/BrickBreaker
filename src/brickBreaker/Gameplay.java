@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class Gameplay extends JPanel implements KeyListener, ActionListener {
     private boolean play = false;
-    private int score = 2;
+    private int score = 0;
 
     private int totalBricks = 21;
 
@@ -59,7 +59,7 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
         g.drawString("" + score, 590, 30);
 
         //paddle
-        g.setColor(Color.white);
+        g.setColor(Color.lightGray);
         g.fillRect(playerX, 550, 100, 8);
         //ball
         g.setColor(Color.green);
@@ -102,7 +102,7 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 
                 int paddleLPos = (int) paddle.getMinX();
                 int ballLPos = (int) ball.getMinX();
-                int first = paddleLPos + 49;
+                int first = paddleLPos + 45;
                 int second = paddleLPos + 50;
 
                 if(ballLPos < first) {

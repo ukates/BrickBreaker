@@ -22,7 +22,8 @@ public class MapGenerator {
         for(int i = 0; i < map.length; i++) {
             for(int j = 0; j < map[0].length; j++){
                 if(map[i][j] > 0) {
-                    g.setColor(Color.blue);
+                    GradientPaint gp1 = new GradientPaint(0, 125, Color.white, 0, 250, Color.blue, true);
+                    g.setPaint(gp1);
                     g.fillRect(j * brickWidth + 80, i * brickHeight + 50,
                         brickWidth, brickHeight);
 
